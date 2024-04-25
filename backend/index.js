@@ -97,12 +97,12 @@ app.delete("/deleteItem/:id", async (req, res) => {
 app.put("/update/:id", async (req, res) => {
     try{
         await client.connect();
-        const roboId = req.params.id;
+        const itemid = req.params.id;
         const random = Math.floor(Math.random() * 100);
 
         const results = await db
         .collection("fakestore_catalog")
-        .updateOne({name: `Robot ${roboId}`}, {$set:{price:random}});
+        .updateOne({id: itemid}, {$set:{price:random}});
 
         res.status(200);
         res.send(results);
