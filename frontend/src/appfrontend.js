@@ -7,15 +7,9 @@ function App() {
     const [deleteProduct, setDeleteProduct] = useState([]);
     const [updateProduct, setUpdateProduct] = useState([]);
 
+    //form hooks
     const { register, handleSubmit, formState: { errors } } = useForm();
-    const {
-        register: register2,
-        formState: { errors: errors2 },
-        handleSubmit: handleSubmit2,
-      } = useForm({});
-
-    // new Product
-    const [addNewProduct, setAddNewProduct] = useState({});
+    const { register: register2, formState: { errors: errors2 }, handleSubmit: handleSubmit2 } = useForm({});
 
     const [viewer1, setViewer1] = useState(false); //get all viewer
     const [viewer2, setViewer2] = useState(false); //get one viewer
@@ -24,12 +18,22 @@ function App() {
     //will need at least 2 more viewers: for the add and authors views 
     //(form to add product is currently always displayed, hence has no viewer) (once bootstrap is added this will change)
 
+
+
+
+    //initial loading of all products
+    useEffect(() => {
+        getAllProducts();
+    }, []);
+
+
+
+    //add 
     const order = data => {
         data.id = parseInt(data.id);
         console.log(data);
         setTimeout(() => { addProduct(data); }, 2000);
     }
-
     function addProduct(data){
         var url = `http://localhost:8081/addItem`
     
@@ -43,10 +47,22 @@ function App() {
             .then(data => console.log(data));
     }
 
-    useEffect(() => {
-        getAllProducts();
-    }, []);
 
+
+
+
+
+
+    //get all
+    const showAllItems = product.map((el) => (
+        <div key={el.id}>
+            <img src={el.image} width={30} alt="images" /> <br />
+            Title: {el.title} <br />
+            Category: {el.category} <br />
+            Price: {el.price} <br />
+            Rating: {el.rating.rate} <br />
+        </div>
+    ));
     function getAllProducts() {
         fetch("http://localhost:8081/catalog")
             .then((response) => response.json())
@@ -57,7 +73,23 @@ function App() {
             });
         setViewer1(!viewer1);
     }
-    
+
+
+
+
+
+
+
+    //get one
+    const showOneItem = oneProduct.map((el) => (
+        <div key={el.id}>
+            <img src={el.image} width={30} alt="images" /> <br />
+            Title: {el.title} <br />
+            Category: {el.category} <br />
+            Price: {el.price} <br />
+            Rating: {el.rating.rate} <br />
+        </div>
+    ));
     function getOneProduct(id) {
         console.log(id);
         if (id >= 1) {
@@ -75,6 +107,36 @@ function App() {
             console.log("Wrong number of Product id.");
             setViewer2(false);
         }
+    }
+
+
+
+
+
+
+    
+
+    //delete
+    const showOneItemToDelete = deleteProduct.map((el) => (
+        <div key={el.id}>
+            <img src={el.image} width={30} alt="images" /> <br />
+            Title: {el.title} <br />
+            Category: {el.category} <br />
+            Price: {el.price} <br />
+            Rating: {el.rating.rate} <br />
+            <button type="button" className = "btn btn-secondary" variant="light" onClick={() => deleteItem(el)}> Confirm Delete</button>
+        </div>
+    ));
+
+    function deleteItem(el){
+        console.log(el);
+        var url = `http://localhost:8081/deleteItem/${el.id}`
+    
+        fetch(url, {method: 'DELETE'})
+        .then(response => response.json())
+        .then(data => console.log(data));
+
+        setViewer3(false);
     }
 
     function getOneProductToDelete(id) {
@@ -96,6 +158,19 @@ function App() {
         }
     }
 
+
+
+
+
+
+
+    //update
+    const update = data => {
+        data.price = parseInt(data.price);
+        console.log(data);
+        setTimeout(() => { updateItem(data); }, 2000);
+    }
+
     function getOneProductToUpdate(id) {
         console.log(id);
         if (id >= 1) {
@@ -113,54 +188,6 @@ function App() {
             console.log("Wrong number of Product id.");
             setViewer4(false);
         }
-    }
-
-    const showAllItems = product.map((el) => (
-        <div key={el.id}>
-            <img src={el.image} width={30} alt="images" /> <br />
-            Title: {el.title} <br />
-            Category: {el.category} <br />
-            Price: {el.price} <br />
-            Rating: {el.rating.rate} <br />
-        </div>
-    ));
-
-    const showOneItem = oneProduct.map((el) => (
-        <div key={el.id}>
-            <img src={el.image} width={30} alt="images" /> <br />
-            Title: {el.title} <br />
-            Category: {el.category} <br />
-            Price: {el.price} <br />
-            Rating: {el.rating.rate} <br />
-        </div>
-    ));
-
-    const showOneItemToDelete = deleteProduct.map((el) => (
-        <div key={el.id}>
-            <img src={el.image} width={30} alt="images" /> <br />
-            Title: {el.title} <br />
-            Category: {el.category} <br />
-            Price: {el.price} <br />
-            Rating: {el.rating.rate} <br />
-            <button type="button" className = "btn btn-secondary" variant="light" onClick={() => deleteRobot(el)}> Confirm Delete</button>
-        </div>
-    ));
-
-    function deleteRobot(el){
-        console.log(el);
-        var url = `http://localhost:8081/deleteItem/${el.id}`
-    
-        fetch(url, {method: 'DELETE'})
-        .then(response => response.json())
-        .then(data => console.log(data));
-
-        setViewer3(false);
-    }
-
-    const update = data => {
-        data.price = parseInt(data.price);
-        console.log(data);
-        setTimeout(() => { updateItem(data); }, 2000);
     }
 
     const showOneItemToUpdate = updateProduct.map((el) => (
@@ -198,9 +225,13 @@ function App() {
     }
     
 
+
+
+
     return ( 
     <div>
         <h1>Catalog of Products</h1>
+
 
         <div>
             <h3>Show all available Products.</h3>
@@ -208,11 +239,13 @@ function App() {
             {viewer1 && showAllItems}
         </div>
 
+
         <div>
             <h3>Show one Product by Id:</h3>
             <input type="text" id="message" name="message" placeholder="id" onChange={(e) => getOneProduct(e.target.value)} />
             {viewer2 && showOneItem}
         </div>
+
 
         <div>
             <h3>Add a product:</h3>
@@ -262,17 +295,21 @@ function App() {
             </form>
         </div>
 
+
         <div>
             <h3>Delete one Product by Id:</h3>
             <input type="text" id="message" name="message" placeholder="id" onChange={(e) => getOneProductToDelete(e.target.value)} />
             {viewer3 && showOneItemToDelete}
         </div>
 
+
         <div>
             <h3>Update one Product by Id:</h3>
             <input type="text" id="updatetextbox" name="message" placeholder="id" onChange={(e) => getOneProductToUpdate(e.target.value)} />
             {viewer4 && showOneItemToUpdate}
         </div>
+
+        
     </div>
     ); // return end
 } // App end
