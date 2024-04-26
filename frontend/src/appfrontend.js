@@ -1,21 +1,33 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import {useForm} from "react-hook-form";
 
 function App() {
     const [product, setProduct] = useState([]);
     const [oneProduct, setOneProduct] = useState([]);
+    const { register, handleSubmit, formState: { errors } } = useForm();
     // new Product
-    const [addNewProduct, setAddNewProduct] = useState({
-        id: 0,
-        title: "",
-        price: 0.0,
-        description: "",
-        category: "",
-        image: "",
-        rating: 0.0,
-    });
+    const [addNewProduct, setAddNewProduct] = useState({});
 
     const [viewer1, setViewer1] = useState(false);
     const [viewer2, setViewer2] = useState(false);
+
+    const order = data => {
+        console.log(data);
+        setTimeout(() => { addProduct(data); }, 2000);
+    }
+
+    function addProduct(data){
+        var url = `http://localhost:8081/addItem`
+    
+        fetch(url, { 
+            method: 'POST', 
+            headers: {
+                'Content-Type': 'application/json'
+            }, 
+            body: JSON.stringify(data)})
+            .then(response => response.json())
+            .then(data => console.log(data));
+    }
 
     useEffect(() => {
         getAllProducts();
@@ -84,28 +96,6 @@ function App() {
         .then(data => console.log(data));
     }
     
-    function addRobot(){
-        var url = `http://localhost:8081/addRobot`
-    
-    
-        const robodata = {
-            "id": 4,
-            "name": "Robot 4",
-            "price": 8.99,
-            "description": "This is me as a robot",
-            "imageUrl": "https://robohash.org/Zane"
-        }
-    
-        fetch(url, { 
-            method: 'POST', 
-            headers: {
-                'Content-Type': 'application/json'
-            }, 
-            body: JSON.stringify(robodata)})
-            .then(response => response.json())
-            .then(data => console.log(data));
-    }
-    
     function deleteRobot(){
         var textBoxValue = document.getElementById("deltextbox").value;
         console.log(textBoxValue);
@@ -126,9 +116,56 @@ function App() {
         </div>
         <div>
             <h3>Show one Product by Id:</h3>
-            <input
-                type="text" id="message" name="message" placeholder="id" onChange={(e) => getOneProduct(e.target.value)} />
+            <input type="text" id="message" name="message" placeholder="id" onChange={(e) => getOneProduct(e.target.value)} />
             {viewer2 && showOneItem}
+        </div>
+
+        <div>
+            <h3>Add a product:</h3>
+            <form onSubmit={handleSubmit(order)} className="container mt-5">
+                <div className="form-group">
+                    <input {...register("id", { required: true })} placeholder="Id" className="form-control"/>
+                    {errors.id && <p className="text-danger">Id is required.</p>}
+                </div>
+                <div className="form-group">
+                    <input {...register("title", { required: true })} placeholder="Title" className="form-control"/>
+                    {errors.title && <p className="text-danger">Title is required.</p>}
+                </div>
+
+                <div className="form-group">
+                    <input {...register("price", {required: true})} placeholder="Price" className="form-control"/>
+                    {errors.price && <p className="text-danger">Price is required.</p>}
+                </div>
+
+                <div className="form-group">
+                    <input {...register("description", { required: true })} placeholder="Description" className="form-control"/>
+                    {errors.description && <p className="text-danger">Description is required.</p>}
+                </div>
+
+                <div className="form-group">
+                    <input {...register("category", { required: true })} placeholder="Category" className="form-control"/>
+                    {errors.category && <p className="text-danger">Category is required.</p>}
+                </div>
+
+                <div className="form-group">
+                    <input {...register("image", { required: true })} placeholder="Image Url" className="form-control"/>
+                    {errors.image && <p className="text-danger">Image is required.</p>}
+                </div>
+
+                <div className="form-group">
+                    <input {...register("rating", {required: true})} placeholder="Rating" className="form-control"/>
+                    {errors.rating && <p className="text-danger">Rating is required.</p>}
+                </div>
+
+                <div className="form-group">
+                    <input {...register("count", {required: true})} placeholder="Count" className="form-control"/>
+                    {errors.count && <p className="text-danger">Count is required.</p>}
+                </div>
+                
+                <button type="button" className = "btn btn-secondary" variant="light"> Return</button>
+
+                <button type="submit" className="btn btn-primary">Add Product</button>
+            </form>
         </div>
     </div>
     ); // return end
