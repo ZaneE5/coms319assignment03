@@ -12,6 +12,7 @@ function App() {
     const [viewer2, setViewer2] = useState(false);
 
     const order = data => {
+        data.id = parseInt(data.id);
         console.log(data);
         setTimeout(() => { addProduct(data); }, 2000);
     }
@@ -46,7 +47,7 @@ function App() {
     
     function getOneProduct(id) {
         console.log(id);
-        if (id >= 1 && id <= 20) {
+        if (id >= 1) {
             fetch("http://localhost:8081/catalog/" + id)
                 .then((response) => response.json())
                 .then((data) => {
@@ -83,6 +84,28 @@ function App() {
         </div>
     ));
 
+    const showOneItemToDelete = oneProduct.map((el) => (
+        <div key={el.id}>
+            <img src={el.image} width={30} alt="images" /> <br />
+            Title: {el.title} <br />
+            Category: {el.category} <br />
+            Price: {el.price} <br />
+            Rating: {el.rating.rate} <br />
+            <button type="button" className = "btn btn-secondary" variant="light" onClick={() => deleteRobot(el)}> Confirm Delete</button>
+        </div>
+    ));
+
+    function deleteRobot(el){
+        console.log(el);
+        var url = `http://localhost:8081/deleteItem/${el.id}`
+    
+        fetch(url, {method: 'DELETE'})
+        .then(response => response.json())
+        .then(data => console.log(data));
+
+        setViewer2(false);
+    }
+
     function updateRobot(){
         var textBoxValue = document.getElementById("updatetextbox").value;
         console.log(textBoxValue);
@@ -96,24 +119,17 @@ function App() {
         .then(data => console.log(data));
     }
     
-    function deleteRobot(){
-        var textBoxValue = document.getElementById("deltextbox").value;
-        console.log(textBoxValue);
-        var url = `http://localhost:8081/deleteRobot/${textBoxValue}`
-    
-        fetch(url, {method: 'DELETE'})
-        .then(response => response.json())
-        .then(data => console.log(data));
-    }
 
     return ( 
     <div>
         <h1>Catalog of Products</h1>
+
         <div>
             <h3>Show all available Products.</h3>
             <button onClick={() => getAllProducts()}>Show All ...</button>
             {viewer1 && showAllItems}
         </div>
+
         <div>
             <h3>Show one Product by Id:</h3>
             <input type="text" id="message" name="message" placeholder="id" onChange={(e) => getOneProduct(e.target.value)} />
@@ -166,6 +182,12 @@ function App() {
 
                 <button type="submit" className="btn btn-primary">Add Product</button>
             </form>
+        </div>
+
+        <div>
+            <h3>Delete one Product by Id:</h3>
+            <input type="text" id="message" name="message" placeholder="id" onChange={(e) => getOneProduct(e.target.value)} />
+            {viewer2 && showOneItemToDelete}
         </div>
     </div>
     ); // return end

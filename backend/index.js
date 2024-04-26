@@ -80,7 +80,7 @@ app.post("/addItem", async (req, res) => {
 app.delete("/deleteItem/:id", async (req, res) => {
     try{
         await client.connect();
-        const itemid = req.params.id;
+        const itemid = parseInt(req.params.id);
 
         const results = await db
         .collection("fakestore_catalog")
