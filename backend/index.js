@@ -84,7 +84,7 @@ app.delete("/deleteItem/:id", async (req, res) => {
 
         const results = await db
         .collection("fakestore_catalog")
-        .deleteMany({id: itemid});
+        .deleteOne({id: itemid});
 
         res.status(200);
         res.send(results);
