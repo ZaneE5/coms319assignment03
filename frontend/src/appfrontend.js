@@ -91,8 +91,6 @@ function App() {
                     <input {...register("count", {required: true})} placeholder="Count" className="form-control"/>
                     {errors.count && <p className="text-danger">Count is required.</p>}
                 </div>
-                
-                <button type="button" className = "btn btn-secondary" variant="light"> Return</button>
 
                 <button type="submit" className="btn btn-primary">Add Product</button>
             </form>
@@ -130,7 +128,7 @@ function App() {
             console.log(data);
             setProduct(data);
             });
-        setallViewer(!allviewer);
+        setViewer(1);
     }
 
 
@@ -323,6 +321,57 @@ user-friendly interface.</p>
             </div>
         </section>
     );
+
+    function setViewer(number) {
+        if (number == 1){
+            setallViewer(!allviewer);
+            setoneViewer(false);
+            setaddViewer(false);
+            setdeleteViewer(false);
+            setupdateViewer(false);
+            setauthorViewer(false);
+        }
+        if (number == 2){
+            setallViewer(false);
+            setoneViewer(!oneviewer);
+            setaddViewer(false);
+            setdeleteViewer(false);
+            setupdateViewer(false);
+            setauthorViewer(false);
+        }
+        if (number == 3){
+            setallViewer(false);
+            setoneViewer(false);
+            setaddViewer(!addviewer);
+            setdeleteViewer(false);
+            setupdateViewer(false);
+            setauthorViewer(false);
+        }
+        if (number == 4){
+            setallViewer(false);
+            setoneViewer(false);
+            setaddViewer(false);
+            setdeleteViewer(!deleteviewer);
+            setupdateViewer(false);
+            setauthorViewer(false);
+        }
+        if (number == 5){
+            setallViewer(false);
+            setoneViewer(false);
+            setaddViewer(false);
+            setdeleteViewer(false);
+            setupdateViewer(!updateviewer);
+            setauthorViewer(false);
+        }
+        if (number == 6){
+            setallViewer(false);
+            setoneViewer(false);
+            setaddViewer(false);
+            setdeleteViewer(false);
+            setupdateViewer(false);
+            setauthorViewer(!authorviewer);
+        }
+    }
     
 
 
@@ -334,11 +383,11 @@ user-friendly interface.</p>
 
         <div>
             <button onClick={() => getAllProducts()}>Show All ...</button>
-            <button onClick={() => setoneViewer(!oneviewer)}>Show One ...</button>
-            <button onClick={() => setaddViewer(!addviewer)}>Add One ...</button>
-            <button onClick={() => setdeleteViewer(!deleteviewer)}>Delete One ...</button>
-            <button onClick={() => setupdateViewer(!updateviewer)}>Update One ...</button>
-            <button onClick={() => setauthorViewer(!authorviewer)}>Authors ...</button>
+            <button onClick={() => setViewer(2)}>Show One ...</button>
+            <button onClick={() => setViewer(3)}>Add One ...</button>
+            <button onClick={() => setViewer(4)}>Delete One ...</button>
+            <button onClick={() => setViewer(5)}>Update One ...</button>
+            <button onClick={() => setViewer(6)}>Authors ...</button>
         </div>
 
         <div>
